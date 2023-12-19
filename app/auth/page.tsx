@@ -19,7 +19,7 @@ export default function Auth() {
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-cover bg-fixed">
       <div className="bg-black w-full h-full lg:bg-opacity-60">
         <nav className="px-12 py-5">
-          <img src="/images/logo.png" alt="logo" className="h-12" />
+          <img src="/images/logo.png" alt="logo" className="h-7 sm:h-12" />
         </nav>
         <div className="m-auto flex justify-center ">
           <div className="bg-black bg-opacity-70 px-16 py-16 self-center mt-2 lg:max-w-md rounded-md w-full  ">
@@ -27,12 +27,15 @@ export default function Auth() {
               {variant}
             </h2>
             <div className="flex flex-col gap-4">
-              <Input
-                label="Username"
-                onChange={(e: any) => setUsername(e.target.value)}
-                id="username"
-                value={username}
-              />
+              {variant === "Register" ? (
+                <Input
+                  label="Username"
+                  onChange={(e: any) => setUsername(e.target.value)}
+                  id="username"
+                  value={username}
+                />
+              ) : null}
+
               <Input
                 label="Email"
                 onChange={(e: any) => setEmail(e.target.value)}
@@ -49,7 +52,7 @@ export default function Auth() {
               />
             </div>
             <button className="bg-red-600 mt-11 py-3 text-white rounded-md w-full hover:bg-red-700 transition font-bold">
-              {variant}
+              {variant === "login" ? "Login" : "Sign up"}
             </button>
             <p className="text-white flex flex-row justify-between mt-1">
               <span className="text-white/50 flex flex-row gap-1 text-sm cursor-pointer">
