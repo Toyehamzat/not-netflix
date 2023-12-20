@@ -1,19 +1,34 @@
 "use client";
 import Input from "@/components/input";
+import axios from "axios";
 import { useCallback, useState } from "react";
 
 export default function Auth() {
-  const [email, setEmail] = useState();
-  const [password, setpassword] = useState();
-  const [username, setUsername] = useState();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
 
-  const [variant, Setvariant] = useState("Login");
+  const [variant, setVariant] = useState<string>("Login");
 
   const toggleVariant = useCallback(() => {
-    Setvariant((currentVariant) =>
+    setVariant((currentVariant) =>
       currentVariant === "Login" ? "Register" : "Login"
     );
   }, []);
+
+  const register = useCallback(async () => {
+    try {
+      await axios.post("/api/register", {
+        email,
+        username,
+        password,
+      });
+      // Handle success or navigate to another page
+    } catch (error) {
+      console.error("Registration error:", error);
+      // Handle error, e.g., show an error message
+    }
+  }, [email, username, password]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-cover bg-fixed">
@@ -45,13 +60,16 @@ export default function Auth() {
               />
               <Input
                 label="Password"
-                onChange={(e: any) => setpassword(e.target.value)}
+                onChange={(e: any) => setPassword(e.target.value)}
                 id="password"
                 type="password"
                 value={password}
               />
             </div>
-            <button className="bg-red-600 mt-11 py-3 text-white rounded-md w-full hover:bg-red-700 transition font-bold">
+            <button
+              onClick={register}
+              className="bg-red-600 mt-11 py-3 text-white rounded-md w-full hover:bg-red-700 transition font-bold"
+            >
               {variant === "login" ? "Login" : "Sign up"}
             </button>
             <p className="text-white flex flex-row justify-between mt-1">

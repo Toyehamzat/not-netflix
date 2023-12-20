@@ -19,6 +19,7 @@ export default function Input({ id, onChange, value, label, type }: Props) {
         className="rounded-md block px-6 py-6 pb-1 w-full bg-neutral-800 text-white appearance-none focus:outline-none focus:ring-0 peer invalid:border-b-1 "
         placeholder=" "
         autoComplete="true"
+        required
       />
       <label
         className=" absolute 
