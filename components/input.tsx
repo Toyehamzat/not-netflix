@@ -1,3 +1,4 @@
+// input.tsx
 import React from "react";
 
 type Props = {
@@ -6,9 +7,17 @@ type Props = {
   value: any;
   label: string;
   type?: string;
+  isPassword?: boolean; // New prop to indicate if it's a password input
 };
 
-export default function Input({ id, onChange, value, label, type }: Props) {
+export default function Input({
+  id,
+  onChange,
+  value,
+  label,
+  type,
+  isPassword = false, // Default to false if not specified
+}: Props) {
   return (
     <div className="relative">
       <input

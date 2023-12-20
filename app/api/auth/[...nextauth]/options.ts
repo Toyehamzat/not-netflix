@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import prismadb from "../../../../lib/prismadb";
+import prismadb from "../../../../prisma";
 import { compare } from "bcrypt";
 
 export const options: NextAuthOptions = {

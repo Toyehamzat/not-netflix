@@ -1,14 +1,18 @@
+// auth.tsx
 "use client";
 import Input from "@/components/input";
 import axios from "axios";
 import { useCallback, useState } from "react";
 
 export default function Auth() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-  const [variant, setVariant] = useState<string>("Login");
+  const [variant, setVariant] = useState("Login");
 
   const toggleVariant = useCallback(() => {
     setVariant((currentVariant) =>
@@ -16,9 +20,54 @@ export default function Auth() {
     );
   }, []);
 
+  const validatePassword = (inputPassword: string) => {
+    // Add your password requirements here
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    setPasswordError(
+      passwordRegex.test(inputPassword)
+        ? null
+        : "Password must be at least 8 characters long and include a digit and a capital letter."
+    );
+  };
+
+  const validateUsername = (inputUsername: string) => {
+    setUsernameError(inputUsername ? null : "Username is required.");
+  };
+
+  const validateEmail = (inputEmail: string) => {
+    setEmailError(inputEmail ? null : "Email is required.");
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    validatePassword(newPassword);
+  };
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUsername = e.target.value;
+    setUsername(newUsername);
+    validateUsername(newUsername);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    validateEmail(newEmail);
+  };
+
   const register = useCallback(async () => {
     try {
-      await axios.post("/api/register", {
+      if (passwordError || usernameError || emailError) {
+        // Display error messages and prevent registration if any field is invalid
+        console.error(
+          "Invalid input. Please check username, email, and password."
+        );
+        return;
+      }
+
+      await axios.post("/api/auth/register", {
         email,
         username,
         password,
@@ -28,7 +77,7 @@ export default function Auth() {
       console.error("Registration error:", error);
       // Handle error, e.g., show an error message
     }
-  }, [email, username, password]);
+  }, [email, username, password, passwordError, usernameError, emailError]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-cover bg-fixed">
@@ -45,26 +94,37 @@ export default function Auth() {
               {variant === "Register" ? (
                 <Input
                   label="Username"
-                  onChange={(e: any) => setUsername(e.target.value)}
+                  onChange={handleUsernameChange}
                   id="username"
                   value={username}
                 />
               ) : null}
+              {usernameError && (
+                <div className="text-xs text-red-500 mt-2">{usernameError}</div>
+              )}
 
               <Input
                 label="Email"
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 id="email"
                 type="email"
                 value={email}
               />
+              {emailError && (
+                <div className="text-xs text-red-500 mt-2">{emailError}</div>
+              )}
+
               <Input
                 label="Password"
-                onChange={(e: any) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 id="password"
                 type="password"
                 value={password}
+                isPassword
               />
+              {passwordError && (
+                <div className="text-xs text-red-500 mt-2">{passwordError}</div>
+              )}
             </div>
             <button
               onClick={register}
