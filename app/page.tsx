@@ -1,5 +1,15 @@
-import Image from "next/image";
-
+"use client";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 export default function Home() {
-  return <h1 className="text-green-600">netflix clone</h1>;
+  const router = useRouter();
+
+  // const { data } = useSession();
+  return (
+    <main>
+      {/* <div className="">{JSON.stringify(data)}</div> */}
+      <button className="text-white">WELCOME</button>
+    </main>
+  );
 }

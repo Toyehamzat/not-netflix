@@ -10,14 +10,7 @@ type Props = {
   isPassword?: boolean; // New prop to indicate if it's a password input
 };
 
-export default function Input({
-  id,
-  onChange,
-  value,
-  label,
-  type,
-  isPassword = false, // Default to false if not specified
-}: Props) {
+export default function Input({ id, onChange, value, label, type }: Props) {
   return (
     <div className="relative">
       <input
@@ -27,7 +20,6 @@ export default function Input({
         id={id}
         className="rounded-md block px-6 py-6 pb-1 w-full bg-neutral-800 text-white appearance-none focus:outline-none focus:ring-0 peer invalid:border-b-1 "
         placeholder=" "
-        autoComplete="true"
         required
       />
       <label

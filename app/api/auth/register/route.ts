@@ -1,5 +1,4 @@
 import prisma from "../../../../prisma";
-import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { connectToDatabase } from "@/helper/server-helpers";
@@ -16,6 +15,20 @@ export const POST = async (req: Request) => {
     }
 
     await connectToDatabase();
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "Email is already in use" },
+        { status: 422 }
+      );
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = await prisma.user.create({
       data: { username, email, hashedPassword },

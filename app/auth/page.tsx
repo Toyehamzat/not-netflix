@@ -2,15 +2,23 @@
 "use client";
 import Input from "@/components/input";
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { BeatLoader } from "react-spinners";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 export default function Auth() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [isFormFilled, setIsFormFilled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [variant, setVariant] = useState("Login");
 
@@ -51,15 +59,40 @@ export default function Auth() {
     validateUsername(newUsername);
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
     validateEmail(newEmail);
   };
 
+  useEffect(() => {
+    setIsFormFilled(Boolean(username) || Boolean(email) || Boolean(password));
+  }, [username, email, password]);
+
+  const login = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/",
+      });
+      router.push("/");
+    } catch (err) {
+    } finally {
+      setIsLoading(false);
+    }
+  }, [email, password, router]);
+
   const register = useCallback(async () => {
     try {
-      if (passwordError || usernameError || emailError) {
+      setIsLoading(true);
+      if (
+        Boolean(passwordError) ||
+        Boolean(usernameError) ||
+        Boolean(emailError)
+      ) {
         // Display error messages and prevent registration if any field is invalid
         console.error(
           "Invalid input. Please check username, email, and password."
@@ -72,12 +105,23 @@ export default function Auth() {
         username,
         password,
       });
+      router.push("/auth");
       // Handle success or navigate to another page
     } catch (error) {
       console.error("Registration error:", error);
       // Handle error, e.g., show an error message
+    } finally {
+      setIsLoading(false);
     }
-  }, [email, username, password, passwordError, usernameError, emailError]);
+  }, [
+    email,
+    username,
+    password,
+    passwordError,
+    usernameError,
+    emailError,
+    router,
+  ]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-cover bg-fixed">
@@ -127,11 +171,28 @@ export default function Auth() {
               )}
             </div>
             <button
-              onClick={register}
-              className="bg-red-600 mt-11 py-3 text-white rounded-md w-full hover:bg-red-700 transition font-bold"
+              onClick={variant === "Login" ? login : register}
+              disabled={!isFormFilled || isLoading}
+              className="bg-red-600 mt-11 py-3 text-white rounded-md w-full hover:bg-red-700 transition font-bold cursor-pointer disabled:cursor-default disabled:bg-red-700"
             >
-              {variant === "login" ? "Login" : "Sign up"}
+              {isLoading ? (
+                <div className=" inset-0 flex items-center justify-center">
+                  <BeatLoader color="#ffffff" loading={isLoading} size={10} />
+                </div>
+              ) : variant === "Login" ? (
+                "Login"
+              ) : (
+                "Sign up"
+              )}
             </button>
+            <div className="flex flex-row items-center gap-5 justify-center my-5">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
+                <FcGoogle size={30} />
+              </div>
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
+                <FaGithub size={30} />
+              </div>
+            </div>
             <p className="text-white flex flex-row justify-between mt-1">
               <span className="text-white/50 flex flex-row gap-1 text-sm cursor-pointer">
                 <input type="checkbox" size={5} />
