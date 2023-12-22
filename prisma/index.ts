@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient;
+var prisma: PrismaClient;
 declare global {
   namespace NodeJS {
     interface global {
@@ -12,10 +12,10 @@ declare global {
 if (process.env.NODE_ENV !== "production") {
   prisma = new PrismaClient();
 } else {
-  if (!global.prismadb) {
-    global.prismadb = new PrismaClient();
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
   }
-  prisma = global.prismadb;
+  prisma = global.prisma;
 }
 
 export default prisma;

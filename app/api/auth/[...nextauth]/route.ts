@@ -36,7 +36,7 @@ export const NextAuthOption: NextAuthOptions = {
         }
         try {
           await connectToDatabase();
-          const user = await prisma.user.findFirst({
+          const user = await prisma.user.findUnique({
             where: { email: credentials.email },
           });
           if (!user || !user.hashedPassword) {
@@ -61,17 +61,17 @@ export const NextAuthOption: NextAuthOptions = {
   ],
   pages: {
     signIn: "/auth",
-    signOut: "/auth",
+    // signOut: "/auth",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  jwt: {
+    secret: process.env.NEXTAUTH_JWT_SECRET,
   },
   debug: process.env.NODE_ENV !== "development",
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
   },
-  jwt: {
-    secret: process.env.NEXTAUTH_JWT_SECRET,
-  },
-  secret: "process.env.NEXTAUTH_SECRET",
 };
 
 const handler = NextAuth(NextAuthOption);

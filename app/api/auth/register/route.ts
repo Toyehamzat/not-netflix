@@ -1,22 +1,22 @@
-import prisma from "../../../../prisma";
+import prisma from "@/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { connectToDatabase } from "@/helper/server-helpers";
 
 export const POST = async (req: Request) => {
   try {
-    const { username, email, password } = await req.json();
+    const { name, email, password } = await req.json();
 
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { message: "Username, email, and password are required" },
+        { message: "name, email, and password are required" },
         { status: 422 }
       );
     }
 
     await connectToDatabase();
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -25,13 +25,13 @@ export const POST = async (req: Request) => {
     if (existingUser) {
       return NextResponse.json(
         { message: "Email is already in use" },
-        { status: 422 }
+        { status: 409 }
       );
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = await prisma.user.create({
-      data: { username, email, hashedPassword },
+      data: { name, email, hashedPassword },
     });
 
     return NextResponse.json(newUser, { status: 200 });

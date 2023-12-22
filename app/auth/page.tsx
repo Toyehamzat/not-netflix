@@ -13,12 +13,14 @@ export default function Auth() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [name, setname] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [nameError, setnameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null); // New state for login error
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   const [variant, setVariant] = useState("Login");
 
@@ -26,10 +28,10 @@ export default function Auth() {
     setVariant((currentVariant) =>
       currentVariant === "Login" ? "Register" : "Login"
     );
+    setLoginError(null); // Reset login error when switching between login and register
   }, []);
 
   const validatePassword = (inputPassword: string) => {
-    // Add your password requirements here
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
     setPasswordError(
@@ -39,8 +41,8 @@ export default function Auth() {
     );
   };
 
-  const validateUsername = (inputUsername: string) => {
-    setUsernameError(inputUsername ? null : "Username is required.");
+  const validatename = (inputname: string) => {
+    setnameError(inputname ? null : "Name is required.");
   };
 
   const validateEmail = (inputEmail: string) => {
@@ -53,10 +55,10 @@ export default function Auth() {
     validatePassword(newPassword);
   };
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUsername = e.target.value;
-    setUsername(newUsername);
-    validateUsername(newUsername);
+  const handlenameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newname = e.target.value;
+    setname(newname);
+    validatename(newname);
   };
 
   const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,20 +68,53 @@ export default function Auth() {
   };
 
   useEffect(() => {
-    setIsFormFilled(Boolean(username) || Boolean(email) || Boolean(password));
-  }, [username, email, password]);
+    setIsFormFilled(Boolean(name) || Boolean(email) || Boolean(password));
+  }, [name, email, password]);
 
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    if (registrationSuccess) {
+      // Hide the success message after 2 seconds
+      timeoutId = setTimeout(() => {
+        setRegistrationSuccess(false);
+      }, 5000);
+    }
+
+    // Cleanup the timeout when the component unmounts or when registrationSuccess changes
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [registrationSuccess]);
   const login = useCallback(async () => {
     try {
       setIsLoading(true);
-      await signIn("credentials", {
+
+      // Perform the sign-in
+      const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
         callbackUrl: "/",
       });
-      router.push("/");
+
+      // Check if the sign-in was successful
+      if (result?.ok && result?.url) {
+        // Handle success, for example, redirect to "/"
+        router.push("/");
+      } else {
+        // Set login error message for unsuccessful login
+        setLoginError("Incorrect email or password. Please try again.");
+      }
+
+      // If you need to perform additional actions after successful authentication,
+      // you can use the result object returned by signIn.
+      // For example, you can access result.url or result.ok to check the status.
     } catch (err) {
+      // Handle errors, if any
+      console.error("Login error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -88,40 +123,32 @@ export default function Auth() {
   const register = useCallback(async () => {
     try {
       setIsLoading(true);
-      if (
-        Boolean(passwordError) ||
-        Boolean(usernameError) ||
-        Boolean(emailError)
-      ) {
+      if (Boolean(passwordError) || Boolean(nameError) || Boolean(emailError)) {
         // Display error messages and prevent registration if any field is invalid
-        console.error(
-          "Invalid input. Please check username, email, and password."
-        );
+        console.error("Invalid input. Please check name, email, and password.");
         return;
       }
 
       await axios.post("/api/auth/register", {
         email,
-        username,
+        name,
         password,
       });
-      router.push("/auth");
-      // Handle success or navigate to another page
-    } catch (error) {
-      console.error("Registration error:", error);
-      // Handle error, e.g., show an error message
+      // Handle success
+      // setVariant("login");
+      setRegistrationSuccess(true);
+    } catch (error: any) {
+      console.error("Registration error:", error.e);
+      if (
+        error.response?.status === 409 &&
+        error.response.data?.message === "Email is already in use"
+      ) {
+        setEmailError("Email already exists. Please use a different email.");
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [
-    email,
-    username,
-    password,
-    passwordError,
-    usernameError,
-    emailError,
-    router,
-  ]);
+  }, [email, name, password, passwordError, nameError, emailError, router]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-cover bg-fixed">
@@ -137,14 +164,14 @@ export default function Auth() {
             <div className="flex flex-col gap-4">
               {variant === "Register" ? (
                 <Input
-                  label="Username"
-                  onChange={handleUsernameChange}
-                  id="username"
-                  value={username}
+                  label="Name"
+                  onChange={handlenameChange}
+                  id="name"
+                  value={name}
                 />
               ) : null}
-              {usernameError && (
-                <div className="text-xs text-red-500 mt-2">{usernameError}</div>
+              {nameError && (
+                <div className="text-xs text-red-500 mt-2">{nameError}</div>
               )}
 
               <Input
@@ -185,14 +212,14 @@ export default function Auth() {
                 "Sign up"
               )}
             </button>
-            <div className="flex flex-row items-center gap-5 justify-center my-5">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
-                <FcGoogle size={30} />
+            {loginError && (
+              <div className="text-xs text-red-500 mt-2">{loginError}</div>
+            )}
+            {registrationSuccess && (
+              <div className="text-xs text-green-500 mt-2">
+                Registration successful! Please Sign in.
               </div>
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
-                <FaGithub size={30} />
-              </div>
-            </div>
+            )}
             <p className="text-white flex flex-row justify-between mt-1">
               <span className="text-white/50 flex flex-row gap-1 text-sm cursor-pointer">
                 <input type="checkbox" size={5} />
@@ -202,6 +229,25 @@ export default function Auth() {
                 Need help?
               </span>
             </p>
+            {/* <div className="flex flex-row items-center gap-5 justify-center my-5">
+              <div
+                onClick={() => {
+                  signIn("google");
+                }}
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              >
+                <FcGoogle size={30} />
+              </div>
+              <div
+                onClick={() => {
+                  signIn("github");
+                }}
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              >
+                <FaGithub size={30} />
+              </div>
+            </div> */}
+
             <div className="py-14">
               <p className="text-white/40">
                 {variant === "Login"
