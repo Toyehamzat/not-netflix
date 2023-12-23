@@ -93,25 +93,11 @@ export default function Auth() {
       setIsLoading(true);
 
       // Perform the sign-in
-      const result = await signIn("credentials", {
+      await signIn("credentials", {
         email,
         password,
-        redirect: false,
-        callbackUrl: "/",
+        callbackUrl: "/profiles",
       });
-
-      // Check if the sign-in was successful
-      if (result?.ok && result?.url) {
-        // Handle success, for example, redirect to "/"
-        router.push("/");
-      } else {
-        // Set login error message for unsuccessful login
-        setLoginError("Incorrect email or password. Please try again.");
-      }
-
-      // If you need to perform additional actions after successful authentication,
-      // you can use the result object returned by signIn.
-      // For example, you can access result.url or result.ok to check the status.
     } catch (err) {
       // Handle errors, if any
       console.error("Login error:", err);
