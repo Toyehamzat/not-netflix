@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/navbar";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -10,12 +11,6 @@ export default function Home() {
   const logouthandler = async () => {
     await signOut();
   };
-
-  // const login = () => {
-  //   router.push("/api/auth/signin");
-  // };
-
-  // Redirect to /auth when there is no session
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth");
@@ -23,16 +18,15 @@ export default function Home() {
   }, [status, router]);
 
   return (
-    <div>
-      <div className="text-white">WELCOME {JSON.stringify(data)}</div>
+    <div className="flex flex-col">
+      <Navbar />
+      {/* <div className="text-white">WELCOME {data?.user?.name}</div>
       {status === "authenticated" && (
-        <button className="text-white" onClick={logouthandler}>
+        <button
+          className="text-black text-4xl bg-white"
+          onClick={logouthandler}
+        >
           LOGOUT
-        </button>
-      )}
-      {/* {status === "unauthenticated" && (
-        <button className="text-white" onClick={login}>
-          LOGIN
         </button>
       )} */}
     </div>
