@@ -1,5 +1,6 @@
 import React from "react";
 import { signOut, useSession } from "next-auth/react";
+import { RiLogoutBoxFill } from "react-icons/ri";
 type Props = {
   visible?: boolean;
 };
@@ -24,9 +25,12 @@ export default function AccountMenu({ visible }: Props) {
       <hr className="bg-gray-600 border-0 h-px my-4" />
       <div
         onClick={() => signOut()}
-        className="px-3 text-center text-white text-sm hover:underline"
+        className="px-3 text-center flex flex-row items-center text-white text-sm hover:underline"
       >
-        Sign out of Netflix
+        <div className=" w-8 rounded-md text-white">
+          <RiLogoutBoxFill />
+        </div>
+        <p> Sign out of Netflix</p>
       </div>
     </div>
   );
