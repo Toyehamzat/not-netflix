@@ -28,7 +28,6 @@ const profiles = () => {
                 <img src="/images/default-blue.png" alt="profile"></img>
               </div>
               <div className=" mt-4 text-gray-400 text-2xl text-center group-hover:text-white">
-                ``
                 {data?.user?.name}
               </div>
             </div>
