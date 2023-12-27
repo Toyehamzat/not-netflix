@@ -38,8 +38,8 @@ export default function Navbar() {
   return (
     <nav className="w-full fixed z-40">
       <div
-        className={`px-6 py-6 md:px-16 flex flex-row items-center transition bg-zinc-900/90 ${
-          showBackground ? "bg-zinc-900/90" : ""
+        className={`px-6 py-6 md:px-16 flex flex-row items-center transition duration-500 ${
+          showBackground ? "bg-zinc-900 bg-opacity-90" : ""
         }`}
       >
         <img src="/images/logo.png" alt="logo" className="h-6 lg:h-8" />
