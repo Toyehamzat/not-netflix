@@ -3,6 +3,7 @@ import { isEmpty } from "lodash";
 import { BsChevronBarDown, BsFillPlayFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { MovieInterface } from "@/types";
+import FavoriteButton from "./FavoriteButton";
 
 type Props = {
   data: MovieInterface[];
@@ -21,10 +22,10 @@ const MovieList = ({ title, data }: Props) => {
         <p className="text-white text-md md:text-xl lg:text-2xl font-semibold">
           {title}
         </p>
-        <div className="grid grid-cols-4  mt-4 gap-2">
+        <div className="grid grid-cols-4 mt-4 gap-2">
           {data.map((movie: any) => (
             <div
-              className="group bg-zinc-900 col-span relative h-[20vw]"
+              className="group bg-zinc-900 col-span relative h-[13.5vw]"
               key={movie.id}
             >
               <img
@@ -46,7 +47,7 @@ const MovieList = ({ title, data }: Props) => {
                     >
                       <BsFillPlayFill className="text-black w-4 lg:w-6" />
                     </div>
-                    {/* <FavoriteButton movieId={data.id} /> */}
+                    <FavoriteButton movieId={movie.id} />
                     <div
                       // onClick={() => openModal(data?.id)}
                       className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300"
