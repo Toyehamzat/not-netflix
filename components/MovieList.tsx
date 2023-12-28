@@ -21,7 +21,7 @@ const MovieList = ({ title, data }: Props) => {
         <p className="text-white text-md md:text-xl lg:text-2xl font-semibold">
           {title}
         </p>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4  mt-4 gap-2">
           {data.map((movie: any) => (
             <div
               className="group bg-zinc-900 col-span relative h-[20vw]"
