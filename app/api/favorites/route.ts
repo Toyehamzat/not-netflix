@@ -4,15 +4,9 @@ import serverAuth from "@/lib/serverAuth";
 import { NextResponse } from "next/server";
 import { useSession } from "next-auth/react";
 
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
+export const GET = async () => {
   try {
-    if (req.method !== "GET") {
-      return res.status(405).end();
-    }
-
-    const { currentUser } = await serverAuth(req, res);
-
-    // const data = useSession()
+    const { currentUser } = await serverAuth();
 
     const favoritedMovies = await prisma.movie.findMany({
       where: {
