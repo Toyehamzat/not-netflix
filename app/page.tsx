@@ -27,9 +27,6 @@ export default function Home() {
       <div className="pb-40 text-white">
         <MovieList title="Trending now" data={movies} />
         <MovieList title="My list" data={Favorites} />
-        <MovieList title="For you" data={movies} />
-        <MovieList title="Kids" data={movies} />
-        <MovieList title="family" data={movies} />
       </div>
     </div>
   );
