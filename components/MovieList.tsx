@@ -1,7 +1,8 @@
 import React from "react";
-import { isEmpty } from "lodash";
 import { MovieInterface } from "@/types";
 import MovieCard from "./MovieCard";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   data: MovieInterface[];
@@ -9,18 +10,13 @@ type Props = {
 };
 
 const MovieList = ({ title, data }: Props) => {
-  const shuffleArray = (array: any) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-  const shuffledData = shuffleArray([...data]);
-  if (isEmpty(data)) {
-    console.log("Movies array is empty or not valid:", data);
+  const { status } = useSession();
+
+  // If the user is not authenticated, you can choose to return null or display a loading indicator.
+  if (status === "loading" || status === "unauthenticated") {
     return null;
   }
+
   return (
     <div className="px-4 md:px-12 mt-4 space-y-8">
       <div>
@@ -28,7 +24,7 @@ const MovieList = ({ title, data }: Props) => {
           {title}
         </p>
         <div className="grid grid-cols-4 mt-4 gap-2">
-          {shuffledData.map((movie: any) => (
+          {data.map((movie: any) => (
             <MovieCard key={movie.id} data={movie} />
           ))}
         </div>

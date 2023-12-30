@@ -6,7 +6,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import axios from "axios";
 
 type Props = {
-  movieId: string;
+  movieId?: string;
 };
 
 const FavoriteButton = ({ movieId }: Props) => {
