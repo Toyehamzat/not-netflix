@@ -1,50 +1,21 @@
+// MovieCard Component
 import { MovieInterface } from "@/types";
-import { useRouter } from "next/navigation";
-import React, { useCallback, useMemo } from "react";
 import { BsChevronBarDown, BsFillPlayFill } from "react-icons/bs";
 import FavoriteButton from "./FavoriteButton";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import useFavorites from "@/hooks/useFavorites";
-import axios from "axios";
-import { AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 type Props = {
   data: MovieInterface;
-  movieId: string;
 };
 
-const MovieCard = ({ data, movieId }: Props) => {
-  const { mutate: mutateFavorites } = useFavorites();
-
-  const { data: currentUser, mutate } = useCurrentUser();
-
-  const isFavorite = useMemo(() => {
-    const list = currentUser?.favoriteIds || [];
-    const movieId = data.id;
-    return list.includes(movieId);
-  }, [currentUser, movieId]);
-
-  const toggleFavorites = useCallback(async () => {
-    let response;
-
-    if (isFavorite) {
-      response = await axios.delete("/api/DeleteFavorite", {
-        data: { movieId },
-      });
-    } else {
-      response = await axios.post("/api/PostFavorite", movieId);
-    }
-
-    const updatedFavoriteIds = response?.data?.favoriteIds;
-
-    mutate({
-      ...currentUser,
-      favoriteIds: updatedFavoriteIds,
-    });
-    mutateFavorites();
-  }, [movieId, isFavorite, currentUser, mutate, mutateFavorites]);
-
-  const Icon = isFavorite ? AiOutlineCheck : AiOutlinePlus;
+const MovieCard = ({ data }: Props) => {
+  const router = useRouter();
+  const redirectToWatch = useCallback(
+    () => router.push(`/watch/${data.id}`),
+    [router, data.id]
+  );
   return (
     <div
       className="group bg-zinc-900 col-span relative h-[13.5vw]"
@@ -64,22 +35,13 @@ const MovieCard = ({ data, movieId }: Props) => {
         <div className="z-10 bg-zinc-800 p-2 lg:p-4 absolute w-full transition shadow-md rounded-b-md">
           <div className="flex flex-row items-center gap-3">
             <div
-              //   onClick={redirectToWatch}
+              onClick={() => router.push(`/watch/${data?.id}`)}
               className="cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300"
             >
               <BsFillPlayFill className="text-black w-4 lg:w-6" />
             </div>
-            {/* <FavoriteButton movieId={data.id} /> */}
-            <div
-              onClick={toggleFavorites}
-              className="cursor-pointer group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300"
-            >
-              <Icon className="text-white group-hover/item:text-neutral-300 w-4 lg:w-6" />
-            </div>
-            <div
-              // onClick={() => openModal(data?.id)}
-              className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300"
-            >
+            <FavoriteButton movieId={data.id} />
+            <div className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300">
               <BsChevronBarDown className="text-white group-hover/item:text-neutral-300 w-4 lg:w-6" />
             </div>
           </div>

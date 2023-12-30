@@ -1,41 +1,46 @@
+// FavoriteButton Component
 import React, { useCallback, useMemo } from "react";
-import axios from "axios";
 import { AiOutlinePlus, AiOutlineCheck } from "react-icons/ai";
 import useFavorites from "@/hooks/useFavorites";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import axios from "axios";
+
 type Props = {
   movieId: string;
 };
 
 const FavoriteButton = ({ movieId }: Props) => {
   const { mutate: mutateFavorites } = useFavorites();
-
   const { data: currentUser, mutate } = useCurrentUser();
 
   const isFavorite = useMemo(() => {
     const list = currentUser?.favoriteIds || [];
-
     return list.includes(movieId);
   }, [currentUser, movieId]);
 
   const toggleFavorites = useCallback(async () => {
-    let response;
+    console.log("Toggling favorites for movieId:", movieId);
+    try {
+      let response;
 
-    if (isFavorite) {
-      response = await axios.delete("/api/DeleteFavorite", {
-        data: { movieId },
+      if (isFavorite) {
+        response = await axios.delete("/api/DeleteFavorite", {
+          data: { movieId },
+        });
+      } else {
+        response = await axios.post("/api/PostFavorite", { movieId });
+      }
+
+      const updatedFavoriteIds = response?.data?.favoriteIds;
+
+      mutate({
+        ...currentUser,
+        favoriteIds: updatedFavoriteIds,
       });
-    } else {
-      response = await axios.post("/api/PostFavorite", { movieId });
+      mutateFavorites();
+    } catch (error) {
+      console.error("Error toggling favorites:", error);
     }
-
-    const updatedFavoriteIds = response?.data?.favoriteIds;
-
-    mutate({
-      ...currentUser,
-      favoriteIds: updatedFavoriteIds,
-    });
-    mutateFavorites();
   }, [movieId, isFavorite, currentUser, mutate, mutateFavorites]);
 
   const Icon = isFavorite ? AiOutlineCheck : AiOutlinePlus;
@@ -51,4 +56,3 @@ const FavoriteButton = ({ movieId }: Props) => {
 };
 
 export default FavoriteButton;
-1;
