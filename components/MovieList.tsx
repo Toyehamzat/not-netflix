@@ -12,6 +12,15 @@ type Props = {
 const MovieList = ({ title, data }: Props) => {
   const { status } = useSession();
 
+  const shuffleArray = (array: any) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+  const shuffledData = shuffleArray([...data]);
+
   // If the user is not authenticated, you can choose to return null or display a loading indicator.
   if (status === "loading" || status === "unauthenticated") {
     return null;
@@ -24,7 +33,7 @@ const MovieList = ({ title, data }: Props) => {
           {title}
         </p>
         <div className="grid grid-cols-4 mt-4 gap-2">
-          {data.map((movie: any) => (
+          {shuffledData.map((movie: any) => (
             <MovieCard key={movie.id} data={movie} />
           ))}
         </div>
