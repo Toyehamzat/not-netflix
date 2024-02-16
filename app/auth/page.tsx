@@ -94,7 +94,7 @@ export default function Auth() {
       await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/profiles",
+        callbackUrl: "/Profile",
       });
     } catch (err) {
       // Handle errors, if any

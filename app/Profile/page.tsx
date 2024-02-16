@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Profiles() {
+export default function Profile() {
   const { data, status } = useSession();
   const router = useRouter();
 
