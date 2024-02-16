@@ -5,6 +5,7 @@ import FavoriteButton from "./FavoriteButton";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import Image from "next/image";
 
 type Props = {
   data: MovieInterface;
@@ -21,13 +22,13 @@ const MovieCard = ({ data }: Props) => {
       className="group bg-zinc-900 col-span relative h-[13.5vw]"
       key={data.id}
     >
-      <img
+      <Image
         className="cursor-pointer object-cover duration-500 transition shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0 delay-200 h-[12vw]"
         src={data.thumbnailUrl}
         alt="thumbnail"
       />
       <div className="opacity-0 absolute top-0 transition duration-200 z-10 invisible sm:visible delay-200 w-full scale-0 group-hover:scale-105  group-hover:-translate-y-[3vw] group-hover:translate-x-[0vw] group-hover:opacity-100">
-        <img
+        <Image
           className="cursor-pointer object-cover transition duration shadow-xl rounded-t-md w-full h-[12vw] "
           src={data.thumbnailUrl}
           alt="thumbnail"

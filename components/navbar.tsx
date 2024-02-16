@@ -5,6 +5,7 @@ import NavbarItem from "./navbarItem";
 import { FaBell, FaChevronDown, FaChevronUp, FaSearch } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
 import AccountMenu from "./AccountMenu";
+import Image from "next/image";
 
 export default function Navbar() {
   const TOP_OFFSET = 66;
@@ -81,7 +82,7 @@ export default function Navbar() {
             className="flex flex-row items-center gap-2 cursor-pointer relative"
           >
             <div className="w-6 h-6 lg:w-10 lg:h-9 rounded-md overflow-hidden">
-              <img src="/images/default-blue.png" alt="profile" />
+              <Image src="/images/default-blue.png" alt="profile" />
             </div>
             <FaChevronDown
               className={`w-4 text-white fill-white transition ${

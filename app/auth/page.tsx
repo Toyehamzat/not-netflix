@@ -6,11 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { BeatLoader } from "react-spinners";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import Image from "next/image";
 
 export default function Auth() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setname] = useState("");
@@ -104,7 +102,7 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
-  }, [email, password, router]);
+  }, [email, password]);
 
   const register = useCallback(async () => {
     try {
@@ -134,13 +132,13 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
-  }, [email, name, password, passwordError, nameError, emailError, router]);
+  }, [email, name, password, passwordError, nameError, emailError]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-cover bg-fixed">
       <div className="bg-black w-full h-full lg:bg-opacity-60">
         <nav className="px-12 py-5">
-          <img src="/images/logo.png" alt="logo" className="h-7 sm:h-12" />
+          <Image src="/images/logo.png" alt="logo" className="h-7 sm:h-12" />
         </nav>
         <div className="m-auto flex justify-center ">
           <div className="bg-black bg-opacity-70 px-16 py-16 self-center mt-2 lg:max-w-md rounded-md w-full  ">
@@ -215,25 +213,6 @@ export default function Auth() {
                 Need help?
               </span>
             </p>
-            {/* <div className="flex flex-row items-center gap-5 justify-center my-5">
-              <div
-                onClick={() => {
-                  signIn("google");
-                }}
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
-              >
-                <FcGoogle size={30} />
-              </div>
-              <div
-                onClick={() => {
-                  signIn("github");
-                }}
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
-              >
-                <FaGithub size={30} />
-              </div>
-            </div> */}
-
             <div className="py-14">
               <p className="text-white/40">
                 {variant === "Login"

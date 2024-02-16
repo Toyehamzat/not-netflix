@@ -1,8 +1,9 @@
 "use client";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-const profiles = () => {
+const Profiles = () => {
   const { data, status } = useSession();
   const router = useRouter();
 
@@ -25,7 +26,7 @@ const profiles = () => {
           >
             <div className="group flex-row w-44 mx-auto">
               <div className="w-44 h-44 rounded-md flex items-center justify-center border-2 border-transparent hover:scale-105 transition group-hover:cursor-pointer group-hover:border-white overflow-hidden ">
-                <img src="/images/default-blue.png" alt="profile"></img>
+                <Image src="/images/default-blue.png" alt="profile" />
               </div>
               <div className=" mt-4 text-gray-400 text-2xl text-center group-hover:text-white">
                 {data?.user?.name}
@@ -38,4 +39,4 @@ const profiles = () => {
   );
 };
 
-export default profiles;
+export default Profiles;
