@@ -248,8 +248,8 @@ export default function Auth() {
                 </span>
               </p>
               <div className="pt-5 text-white/60 text-sm">
-                This page is not protected by Google reCAPTCHA which ensures
-                you're not a bot.
+                This page is not protected by Google reCAPTCHA which ensures you
+                are not a bot.
               </div>
             </div>
           </div>
