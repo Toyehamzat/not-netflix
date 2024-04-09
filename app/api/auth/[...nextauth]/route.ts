@@ -7,7 +7,7 @@ import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcrypt";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
-const NextAuthOption: NextAuthOptions = {
+export const NextAuthOption: NextAuthOptions = {
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID || "",
