@@ -1,35 +1,35 @@
-// watch/[movieId]/route.ts
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/prisma";
-import serverAuth from "@/lib/serverAuth";
+// // watch/[movieId]/route.ts
+// import { NextApiRequest, NextApiResponse } from "next";
+// import prisma from "@/prisma";
+// import serverAuth from "@/lib/serverAuth";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    // if (req.method !== "GET") {
-    //   return res.status(405).end();
-    // }
+// export default async function handler(req: NextApiRequest) {
+//   try {
+//     // if (req.method !== "GET") {
+//     //   return { status: 405, body: "Method Not Allowed" };
+//     // }
 
-    await serverAuth();
+//     await serverAuth();
 
-    const { movieId } = req.query;
+//     const { movieId } = req.query;
 
-    if (!movieId || typeof movieId !== "string") {
-      throw new Error("Invalid or missing movieId");
-    }
+//     if (!movieId || typeof movieId !== "string") {
+//       throw new Error("Invalid or missing movieId");
+//     }
 
-    const movie = await prisma.movie.findUnique({
-      where: {
-        id: movieId,
-      },
-    });
+//     const movie = await prisma.movie.findUnique({
+//       where: {
+//         id: movieId,
+//       },
+//     });
 
-    if (!movie) {
-      throw new Error("Movie not found");
-    }
+//     if (!movie) {
+//       throw new Error("Movie not found");
+//     }
 
-    return res.status(200).json(movie);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-}
+//     return { status: 200, body: movie };
+//   } catch (error) {
+//     console.error(error);
+//     return { status: 500, body: "Internal Server Error" };
+//   }
+// }
